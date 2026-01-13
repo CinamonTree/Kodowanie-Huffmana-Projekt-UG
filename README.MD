@@ -22,23 +22,26 @@ Użycie wygląda w następujący sposób:
 Aplikacja **huff_win_x86_64.exe** pozwala na kompresję dowolnego rodzaju pliku do formatu .huff własnej implementacji, a także późniejszą dekompresję.<br>
 Z aplikacji korzysta się w stylu komend UNIX-owych. W dowolnym terminalu wpisujemy nazwę aplikacji następując opcjami i ich argumentami. Przykład przedstawiony poniżej.<br>
 Krótkie przedstawienie opcji aplikacji terminala, oraz przykładowe użycie.<br>
-```huff -c [ścieżka_pliku]``` Compress - Opcja kompresji pliku danego w argumencie opcji.<br>
-```huff -d [ścieżka_pliku]``` Decompress - Opcja dekompresji pliku danego w argumencie opcji.<br>
+```huff -c [ścieżka_pliku]``` Compress - Opcja kompresji pliku danego w argumencie opcji. Kompresuje plik do folderu roboczego.<br>
+```huff -d [ścieżka_pliku]``` Decompress - Opcja dekompresji pliku danego w argumencie opcji. Plik który chcemy zdekompresować musi mieć rozszerzenie .huff.<br>
 ```huff -o [ścieżka_wyjścia]``` Output - Razem z opcją -c | -d pozwala wybrać docelowe miejsce wyjścia.<br>
 Przykładowe użycie:<br>
-```huff -c moj_plik.txt -o ./kompresje/moj_skompresowany_plik```
-Takie użycie utworzy w lokalizacji w której leży aplikacja skompresowane dane z oryginalnego pliku i przełoży je do ./kompresje z nadaną nazwą moj_skompresowany_plik.huff.<br>
-Utworzony plik będzie miał rozszerzenie ".huff".
+```huff -c moj_plik.txt -o ./kompresje/moj_skompresowany_plik.txt```
+Takie użycie utworzy w podanej lokalizacji pliku wyjściowego plik o nazwie *moj_skompresowany_plik.txt.huff*. Ważne jest aby podać w opcji -o rozszerzenie pliku aby nie zgubić go przy dekompresji.<br>
+```huff -d ./kompresje/moj_skompresowany_plik.txt.huff```
+Takie użycie natomiast utworzy w folderze roboczym plik o nazwie *moj_skompresowany_plik.txt*, który będzie defacto dekompresją pliku podanego w argumencie opcji -d.
 ## 2. Implementacja
 ### 2.2 Podział na dwie części
 Projekt jest podzielony na dwie części dla lepszej czytelności.<br>
+Pierwsza część jest to aplikacja konsolowa z własnym interfejsem dla przetestowania kolejki.<br>
+Druga część jest to właściwy projekt kodowania huffmana która korzysta z implementacji wcześniej napisanej kolejki priorytetowej.<br>
 ### 2.3 Struktura nagłówka i tablicy danych
 ```cpp
-std::byte magic_bytes[4] // Magiczne bajty HUFF            [4B]
-uint64_t length          // Długość oryginalnych danych    [8B]
-uint16_t count           // Ilość różnych bajtów (symboli) [2B]
+std::byte magic_bytes[4]     // Magiczne bajty HUFF            [4B]
+uint64_t length              // Długość oryginalnych danych    [8B]
+uint16_t count               // Ilość różnych bajtów (symboli) [2B]
 // Dla każdego bitu:
-  std::byte  byte        //                                [1B]
-  uint32_t frequency     //                                [4B]
-std::byte Data[len]      // Dane długości len              []
+  std::byte  byte            //                                [1B]
+  uint32_t frequency         //                                [4B]
+std::byte Data[len]          // Dane długości len              []
 ```
