@@ -5,22 +5,24 @@
 #include <stdexcept>
 #include <regex>
 
+std::regex INPUT_REGEX{R"(^[A-Za-z0-9._\-\/]+$)"};
+std::regex OUTPUT_REGEX{R"(^[A-Za-z0-9._\-\/]+$)"};
 
-std::regex INPUT_REGEX{R"(^[A-Za-z0-9._-]+$)"};
-std::regex OUTPUT_REGEX{R"(^[A-Za-z0-9._-]+$)"};
-
-std::string remove_extension(const std::string& path) {
-    size_t pos = path.find_last_of('.');
-    if (pos == std::string::npos) {
-        return path;
-    }
-    return path.substr(0, pos);
+bool ends_with(const std::string& str, const std::string& suffix) {
+    if (str.size() < suffix.size()) return false;
+    return str.compare(str.size() - suffix.size(), suffix.size(), suffix) == 0;
 }
 
 bool ends_with_huff(const std::string& path) {
+    return ends_with(path, ".huff");
+}
+
+std::string remove_huff_extension(const std::string& path) {
     const std::string ext = ".huff";
-    if (path.size() < ext.size()) return false;
-    return path.substr(path.size() - ext.size()) == ext;
+    if (ends_with(path, ext)) {
+        return path.substr(0, path.size() - ext.size());
+    }
+    return path;
 }
 
 Arguments ArgumentParaser::parse_args(int argc, char** argv) {
@@ -118,13 +120,16 @@ Arguments ArgumentParaser::parse_args(int argc, char** argv) {
 
     if (!is_output_path_selected) {
         if (output_args.mode == MODE::COMPRESS) {
-            output_args.output_path = remove_extension(input_path) + ".huff";
+            output_args.output_path = input_path + ".huff";
         } else {
-            output_args.output_path = input_path + ".out";
+            output_args.output_path = remove_huff_extension(input_path);
         }
     } else {
         output_args.output_path = output_path;
+        if (output_args.mode == MODE::COMPRESS && !ends_with_huff(output_args.output_path)) {
+            output_args.output_path += ".huff";
+        }
     }
 
     return output_args;
-};
+}
