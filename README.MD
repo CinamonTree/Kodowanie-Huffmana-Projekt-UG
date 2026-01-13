@@ -1,23 +1,44 @@
 # Kody Huffmana - Projekt Rafał Jankowski
-
-### Struktura nagłówka i tablicy danych
-
+Projekt na zajęcia "Algorytmy i struktury danych" na Uniwersytecie Gdańskim.
+## 1. Użycie
+### 1.1 Lokalizacja plików wykonywalnych
+Skompilowane pliki znajdują się w folderze "exe" głównego katalogu.<br>
+Plik **priority_queue_win_x86_64.exe** zawiera konsolową aplikację z interfejsem przedstawiającą działanie implementacji kolejki priorytetowej.<br>
+Plik **huff_win_x86_64.exe** zawiera aplikację<br>
+### 1.2 Kolejka priorytetowa
+Pierwsza część projektu zawiera kolejkę priorytetową w postaci aplikacji terminala z czytelnym prostym interfejsem.<br>
+Użycie wygląda w następujący sposób:
+1. Uruchamiamy aplikację w dowolnym miejscu.
+2. Po wyświetleniu ekranu tytułowego naciskamy Enter aby przejść dalej.
+3. Wybieramy typ danych na jakich będzie działać kolejka. Do wyboru:
+    - INT
+    - CHAR
+    - STRING
+4. Po wybraniu typu mamy operacje.
+    - POP - Które usuwa element o najniższym priorytecie.
+    - PUSH - Po podaniu priorytetu i danych wrzuca element do kopca i go odbudowuje.
+    - EXIT - Kończy działanie aplikacji.
+### 1.3 Aplikacja Kompresji Kodami Huffmana
+Aplikacja **huff_win_x86_64.exe** pozwala na kompresję dowolnego rodzaju pliku do formatu .huff własnej implementacji, a także późniejszą dekompresję.<br>
+Z aplikacji korzysta się w stylu komend UNIX-owych. W dowolnym terminalu wpisujemy nazwę aplikacji następując opcjami i ich argumentami. Przykład przedstawiony poniżej.<br>
+Krótkie przedstawienie opcji aplikacji terminala, oraz przykładowe użycie.<br>
+```huff -c [ścieżka_pliku]``` Compress - Opcja kompresji pliku danego w argumencie opcji.<br>
+```huff -d [ścieżka_pliku]``` Decompress - Opcja dekompresji pliku danego w argumencie opcji.<br>
+```huff -o [ścieżka_wyjścia]``` Output - Razem z opcją -c | -d pozwala wybrać docelowe miejsce wyjścia.<br>
+Przykładowe użycie:<br>
+```huff -c moj_plik.txt -o ./kompresje/moj_skompresowany_plik```
+Takie użycie utworzy w lokalizacji w której leży aplikacja skompresowane dane z oryginalnego pliku i przełoży je do ./kompresje z nadaną nazwą moj_skompresowany_plik.huff.<br>
+Utworzony plik będzie miał rozszerzenie ".huff".
+## 2. Implementacja
+### 2.2 Podział na dwie części
+Projekt jest podzielony na dwie części dla lepszej czytelności.<br>
+### 2.3 Struktura nagłówka i tablicy danych
 ```cpp
-std::byte magic_bytes[4] // Magiczne bity HUFF         [4B]
-uint64_t length          // Długość orginalnych danych [8B]
-uint16_t count           // Ilość różnych bitów        [2B]
+std::byte magic_bytes[4] // Magiczne bajty HUFF            [4B]
+uint64_t length          // Długość oryginalnych danych    [8B]
+uint16_t count           // Ilość różnych bajtów (symboli) [2B]
 // Dla każdego bitu:
-  std::byte  byte        //                            [1B]
-  uint32_t frequency     //                            [4B]
-std::byte Data[len]      // Dane długości len          []
+  std::byte  byte        //                                [1B]
+  uint32_t frequency     //                                [4B]
+std::byte Data[len]      // Dane długości len              []
 ```
-## Użycie
-### Komendy aplikacji terminala
-Krótke przedstawienie opcji aplikacji terminala, oraz przykładowe użycie.<br>
-```-c [path_to_target]``` Compress - Opcja kompresji pliku danego w argumencie opcji<br>
-```-d [path_to_target]``` Decompress - Opcja dekompresji pliku danego w argumencie opcji<br>
-```-o [nazwa_pliku_wyjściowego]``` Output - Razem z opcją -c pozwala wybrać nazwę pliku wyjściowego kompresji
-
-przykładowe użycie:<br>
-```huff -c moj_plik.txt```
-takie użycie utworzy w lokalizacji w której leży aplikacja skompresowane dane z orginalnego pliku. Utworzony plik będzie miał rozszerzenie ".huff"
