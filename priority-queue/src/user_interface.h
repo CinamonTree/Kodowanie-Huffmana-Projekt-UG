@@ -12,6 +12,7 @@
 class UserInterface {
 
 public:
+    // Uruchamia petle wyboru formatu i obslugi kolejki.
     void run() {
         welcome_screen();
         DataFormat format = choose_format();
@@ -43,6 +44,7 @@ private:
         EXIT = 3
     };
 
+    // Wyswietla ekran powitalny i czeka na Enter.
     void welcome_screen() {
         printf("Prezentacja kolejki priorytetowej\n");
         printf("Projekt - Rafal Jankowski\n"); 
@@ -50,6 +52,7 @@ private:
         clear_console();
     }
 
+    // Pobiera od uzytkownika format danych kolejki.
     DataFormat choose_format() {
         int input = 0;
         while (true) {
@@ -71,6 +74,7 @@ private:
         }
     }
 
+    // Pobiera od uzytkownika wybrana operacje.
     UserOperation get_user_operation() {
         printf("\nWybierz operacje do wykonania:\n");
         printf("1) Push\n");
@@ -92,6 +96,7 @@ private:
     }
 
     template <typename T>
+    // Glowna petla obslugi kolejki dla typu T.
     void main_loop() {
         MinPriorityQueue<T> queue;
         while (true) {
@@ -142,19 +147,23 @@ private:
         }
     }
 
+    // Wyswietla wartosc typu int.
     void print_value_overload(const int& value) {
         printf("%d", value);
     }
 
+    // Wyswietla wartosc typu char.
     void print_value_overload(const char& value) {
         printf("'%c'", value);
     }
 
+    // Wyswietla wartosc typu string.
     void print_value_overload(const std::string& value) {
         printf("%s", value.c_str());
     }
 
     template <typename T>
+    // Drukuje aktualny stan kolejki.
     void print_queue(MinPriorityQueue<T>& queue) {
         auto view = queue.get_view();
         printf("[");
@@ -167,6 +176,7 @@ private:
         printf("]\n");
     }
 
+    // Czyści konsolę w zaleznosci od systemu.
     void clear_console() {
         #ifdef _WIN32
             system("cls");
@@ -175,11 +185,13 @@ private:
         #endif
     }
 
+    // Czyści bufor wejscia.
     void clear_buffer() {
         int c;
         while ((c = getchar()) != '\n' && c != EOF) {}
     }
 
+    // Czeka na wcisniecie Enter.
     void wait_for_enter() {
         printf("Nacisnij Enter, aby kontynuowac...");
         int c;

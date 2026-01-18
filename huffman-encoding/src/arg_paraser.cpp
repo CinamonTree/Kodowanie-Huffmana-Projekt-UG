@@ -5,18 +5,21 @@
 #include <stdexcept>
 #include <regex>
 
-std::regex INPUT_REGEX{R"(^[A-Za-z0-9._\-\/]+$)"};
-std::regex OUTPUT_REGEX{R"(^[A-Za-z0-9._\-\/]+$)"};
+std::regex INPUT_REGEX{R"(^[A-Za-z0-9._\-\\/:]+$)"};
+std::regex OUTPUT_REGEX{R"(^[A-Za-z0-9._\-\\/:]+$)"};
 
+// Sprawdza, czy napis ma wskazany sufiks.
 bool ends_with(const std::string& str, const std::string& suffix) {
     if (str.size() < suffix.size()) return false;
     return str.compare(str.size() - suffix.size(), suffix.size(), suffix) == 0;
 }
 
+// Sprawdza, czy sciezka konczy sie rozszerzeniem .huff.
 bool ends_with_huff(const std::string& path) {
     return ends_with(path, ".huff");
 }
 
+// Usuwa rozszerzenie .huff, jesli wystepuje.
 std::string remove_huff_extension(const std::string& path) {
     const std::string ext = ".huff";
     if (ends_with(path, ext)) {
@@ -25,6 +28,7 @@ std::string remove_huff_extension(const std::string& path) {
     return path;
 }
 
+// Waliduje argumenty i buduje strukture Arguments.
 Arguments ArgumentParaser::parse_args(int argc, char** argv) {
     bool is_mode_selected = false;
     bool is_output_path_selected = false;

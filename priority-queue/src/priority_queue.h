@@ -9,11 +9,13 @@ template <typename T>
 class MinPriorityQueue {
 
 public:
+    // Dodaje element z priorytetem do kolejki.
     void push(unsigned int priority, std::unique_ptr<T> value) {
         heap.push_back({priority, std::move(value)});
         build_up(heap.size() - 1);
     }
 
+    // Usuwa i zwraca element o najmniejszym priorytecie.
     std::pair<unsigned int, std::unique_ptr<T>> pop() {
         if (heap.empty())
             return {0u, nullptr};
@@ -29,6 +31,7 @@ public:
         return result;
     }
     
+    // Buduje kolejke z listy elementow.
     void build(const std::vector<std::pair<unsigned int, T>>& items) {
         heap.clear();
         heap.reserve(items.size());
@@ -40,11 +43,12 @@ public:
         }
     }
 
+    // Sprawdza, czy kolejka jest pusta.
     bool isEmpty() const {
         return heap.empty();
     };
 
-    // zwraca kolejkę z kopią priorytetu i wskaźnikiem tylko do wglądu.
+    // Zwraca kolejkę z kopią priorytetu i wskaźnikiem tylko do wglądu.
     std::vector<std::pair<unsigned int, const T*>> get_view() {
         std::vector<std::pair<unsigned int, const T*>> view_array;
         view_array.reserve(heap.size());
@@ -57,6 +61,7 @@ public:
 private:
     std::vector<std::pair<unsigned int, std::unique_ptr<T>>> heap;
 
+    // Przywraca kopiec, przesuwajac element w gore.
     void build_up(size_t index) {
         while (index > 0) {
             size_t parent_i = parent(index);
@@ -67,6 +72,7 @@ private:
         }
     }
 
+    // Przywraca kopiec, przesuwajac element w dol.
     void build_down(size_t index) {
         size_t smallest = index;
         size_t left = left_son(index);
@@ -83,14 +89,17 @@ private:
         }
     }
 
+    // Zwraca indeks lewego dziecka.
     constexpr size_t left_son(size_t index) const {
         return 2 * index + 1;
     }
 
+    // Zwraca indeks prawego dziecka.
     constexpr size_t right_son(size_t index) const {
         return 2 * index + 2;
     }
 
+    // Zwraca indeks rodzica.
     constexpr size_t parent(size_t index) const {
         return  (index - 1) / 2;
     }

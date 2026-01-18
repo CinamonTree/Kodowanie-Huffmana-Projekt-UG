@@ -2,7 +2,7 @@
 Projekt na zajęcia "Algorytmy i struktury danych" na Uniwersytecie Gdańskim.
 ## 1. Użycie
 ### 1.1 Lokalizacja plików wykonywalnych
-Skompilowane pliki znajdują się w folderze "exe" głównego katalogu.<br>
+Skompilowane pliki znajdują się w folderze "bin" głównego katalogu.<br>
 Plik **priority_queue_win_x86_64.exe** zawiera konsolową aplikację z interfejsem przedstawiającą działanie implementacji kolejki priorytetowej.<br>
 Plik **huff_win_x86_64.exe** zawiera aplikację<br>
 ### 1.2 Kolejka priorytetowa
@@ -36,12 +36,15 @@ Projekt jest podzielony na dwie części dla lepszej czytelności.<br>
 Pierwsza część jest to aplikacja konsolowa z własnym interfejsem dla przetestowania kolejki.<br>
 Druga część jest to właściwy projekt kodowania huffmana która korzysta z implementacji wcześniej napisanej kolejki priorytetowej.<br>
 ### 2.3 Struktura nagłówka i tablicy danych
-```cpp
-std::byte magic_bytes[4]     // Magiczne bajty HUFF            [4B]
-uint64_t length              // Długość oryginalnych danych    [8B]
-uint16_t count               // Ilość różnych bajtów (symboli) [2B]
-// Dla każdego bitu:
-  std::byte  byte            //                                [1B]
-  uint32_t frequency         //                                [4B]
-std::byte Data[len]          // Dane długości len              []
+Nagłówek jest zapisywany jako tekstowe linie w formacie `symbol:czestotliwosc`,
+po jednej linii na każdy symbol. Symbol jest kodowany znakami specjalnymi
+(`\\n`, `\\r`, `\\t`, `\\s`, `\\:`, `\\\\`) lub w postaci `\\xHH` dla bajtów
+niedrukowalnych. Nagłówek kończy pusta linia. Po nim występuje strumień bitów
+danych, a na samym końcu zapisywany jest jeden bajt z liczbą bitów paddingu
+(0-7) dla ostatniego bajtu danych.
+Przykład linii nagłówka:
+```
+\x0A:15
+a:120
+\::3
 ```

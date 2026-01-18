@@ -16,5 +16,6 @@ struct Arguments{
 
 class ArgumentParaser {
 public:
+    // Parsuje argumenty CLI i zwraca tryb oraz sciezki.
     static Arguments parse_args(int argc, char** argv);
 };
