@@ -74,14 +74,16 @@ public:
 
     // Budowa drzewa ze słownika częstotliwości
     static std::unique_ptr<HuffmanTree> from_frequencies(const std::map<std::byte, uint32_t>& frequencies) {
-        MinPriorityQueue<HuffmanTree> pq;
-        for (auto it = frequencies.begin(); it != frequencies.end(); ++it) {
-            std::byte b = it->first;
-            uint32_t f = it->second;
-
+        std::vector<MinPriorityQueue<HuffmanTree>::Item> items;
+        items.reserve(frequencies.size());
+        for (auto iterator = frequencies.begin(); iterator != frequencies.end(); iterator++) {
+            std::byte b = iterator->first;
+            uint32_t f = iterator->second;
             unsigned int tie = std::to_integer<unsigned int>(b);
-            pq.push(f, tie, std::make_unique<HuffmanTree>(b, f));
+            items.push_back(MinPriorityQueue<HuffmanTree>::Item{f, tie, std::make_unique<HuffmanTree>(b, f)});
         }
+
+        MinPriorityQueue<HuffmanTree> pq = MinPriorityQueue<HuffmanTree>::linear_build(std::move(items));
 
         while (pq.size() > 1) {
             auto p1 = pq.pop();
@@ -99,7 +101,7 @@ public:
             unsigned int new_freq = f1 + f2;
             unsigned int new_tie  = (t1 < t2) ? t1 : t2;
 
-            pq.push(new_freq, new_tie, std::move(new_tree));
+            pq.push(MinPriorityQueue<HuffmanTree>::Item{new_freq, new_tie, std::move(new_tree)});
         }
 
         auto last = pq.pop();

@@ -8,11 +8,24 @@
 template <typename T>
 class MinPriorityQueue {
 
+private:
+
 public:
 
+    struct Item {
+        unsigned int priority;
+        unsigned int tie;
+        std::unique_ptr<T> value;
+    };
+
+private:
+
+    std::vector<Item> heap;
+
+public:
     // Dodaje element z priorytetem i wartoscia.
-    void push(unsigned int priority, unsigned int tie, std::unique_ptr<T> value) {
-        heap.push_back(Item{priority, tie, std::move(value)});
+    void push(Item item) {
+        heap.push_back(std::move(item));
         build_up(heap.size() - 1);
     }
 
@@ -51,14 +64,22 @@ public:
         return view_array;
     }
 
-private:
-    struct Item {
-        unsigned int priority;
-        unsigned int tie;
-        std::unique_ptr<T> value;
-    };
+    static MinPriorityQueue<T> linear_build(std::vector<Item> items) {
+        MinPriorityQueue<T> queue;
+        queue.heap.clear();
+        queue.heap.reserve(items.size());
+        for (auto& item : items) {
+            queue.heap.push_back(std::move(item));
+        }
+        if (!queue.heap.empty()) {
+            for (size_t i = queue.heap.size() / 2; i > 0; i--) {
+                queue.build_down(i);
+            }
+        }
+        return queue;
+    }
 
-    std::vector<Item> heap;
+private:
 
     // Porownuje elementy po priorytecie i tie-breaku.
     static bool less(const Item& a, const Item& b) {
